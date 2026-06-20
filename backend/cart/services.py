@@ -10,7 +10,7 @@ def get_cart(user):
 
 @transaction.atomic
 def add_to_cart(cart, product_id, quantity):
-    product = Product.objects.select_for_update().get(id=product_id)
+    product = Product.objects.get(id=product_id)
 
     item, created = CartItem.objects.get_or_create(
         cart=cart,
@@ -23,7 +23,7 @@ def add_to_cart(cart, product_id, quantity):
     )
 
     if not created:
-        item.quantity += quantity
+        item.quantity = item.quantity + quantity
+        item.save(update_fields=["quantity"])  # IMPORTANT
 
-    item.save()
     return item

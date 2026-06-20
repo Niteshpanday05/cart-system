@@ -10,6 +10,7 @@ export default function Products() {
 
   const handleAdd = async (id) => {
     const token = localStorage.getItem("access");
+   console.log("TOKEN:", token);
 
     if (!token) {
       alert("Please login first");
