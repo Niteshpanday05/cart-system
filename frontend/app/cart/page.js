@@ -9,11 +9,14 @@ export default function CartPage() {
   useEffect(() => {
     const fetchCart = async () => {
       const token = localStorage.getItem("access");
-      console.log("Cart API Response:", data);
+      
 
       if (!token) return;
 
       const data = await getCart(token);
+
+      console.log("Cart API Response:", data);
+      
       setCart(data);
     };
 
