@@ -7,6 +7,8 @@ from products.models import Product
 
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
@@ -14,7 +16,6 @@ class CartItem(models.Model):
 
     product_name = models.CharField(max_length=255)
     price_at_add = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity = models.IntegerField(default=1)
-
+    quantity = models.PositiveIntegerField(default=1)
     class Meta:
         unique_together = ("cart", "product")

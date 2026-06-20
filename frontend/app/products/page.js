@@ -9,8 +9,15 @@ export default function Products() {
   ];
 
   const handleAdd = async (id) => {
-    const token = localStorage.getItem("token");
-    await addToCart(token, id);
+    const token = localStorage.getItem("access");
+
+    if (!token) {
+      alert("Please login first");
+      return;
+    }
+
+    const res = await addToCart(token, id, 1);
+    console.log("Added to cart:", res);
   };
 
   return (
@@ -19,8 +26,9 @@ export default function Products() {
 
       {products.map((p) => (
         <div key={p.id}>
-          <h3>{p.name}</h3>
+          <h2>{p.name}</h2>
           <p>{p.price}</p>
+
           <button onClick={() => handleAdd(p.id)}>
             Add to Cart
           </button>

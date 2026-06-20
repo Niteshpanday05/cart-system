@@ -3,30 +3,35 @@
 import { useEffect, useState } from "react";
 import { getCart } from "@/lib/api";
 
-export default function Cart() {
+export default function CartPage() {
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const fetchCart = async () => {
+      const token = localStorage.getItem("access");
+      console.log("Cart API Response:", data);
 
-    getCart(token).then((data) => {
-      console.log("Cart API:", data);
-      setCart(Array.isArray(data) ? data : []);
-    });
+      if (!token) return;
+
+      const data = await getCart(token);
+      setCart(data);
+    };
+
+    fetchCart();
   }, []);
 
   return (
     <div>
-      <h1>Cart</h1>
+      <h1>Your Cart</h1>
 
       {cart.length === 0 ? (
         <p>No items in cart</p>
       ) : (
         cart.map((item, index) => (
           <div key={index}>
-            <p>{item.product}</p>
-            <p>{item.price}</p>
-            <p>{item.quantity}</p>
+            <h3>{item.product_name}</h3>
+            <p>Price: {item.price_at_add}</p>
+            <p>Qty: {item.quantity}</p>
           </div>
         ))
       )}
