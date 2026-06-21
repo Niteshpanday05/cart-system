@@ -12,7 +12,7 @@ class Product(models.Model):
         max_digits=10, decimal_places=2, null=True, blank=True
     )
 
-    image = models.URLField()
+    image = models.ImageField(upload_to="products/")
 
     category = models.CharField(max_length=100)
 
