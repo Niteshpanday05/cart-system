@@ -16,11 +16,13 @@ class CartView(APIView):
 
         data = [
             {
+                "id": i.id,
                 "product": i.product_name,
                 "price": i.price_at_add,
-                "quantity": i.quantity
+                "quantity": i.quantity,
+                "image": i.product.image.url if i.product.image else None,
             }
-            for i in cart.items.all()
+            for i in cart.items.select_related("product")
         ]
 
         return Response(data)
