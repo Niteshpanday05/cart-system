@@ -12,6 +12,7 @@ const cartSlice = createSlice({
 
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
+      console.log("reducer called:",action.payload)
       const existingItem = state.items.find(
         (item) => item.id === action.payload.id,
       );
@@ -21,7 +22,6 @@ const cartSlice = createSlice({
       } else {
         state.items.push({
           ...action.payload,
-          quantity: 1,
         });
       }
     },

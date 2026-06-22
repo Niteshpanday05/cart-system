@@ -1,10 +1,10 @@
 export interface CartItem {
   id: number;
   name: string;
-  slug: string;
+  slug?: string;
   price: number;
   image: string;
-  stock: number;
+  stock?: number;
   quantity: number;
 }
 

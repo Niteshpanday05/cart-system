@@ -2,26 +2,24 @@
 
 import { Product } from "@/types/product";
 import { addToCart } from "@/redux/slices/cartSlice";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@/redux/hooks";
 
 interface Props {
   product: Product;
 }
 
 export default function ProductCard({ product }: Props) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleAddToCart = async () => {
     const token = localStorage.getItem("access");
 
-    // 🔐 1. Check authentication
     if (!token) {
       alert("Please login to add items to cart");
       return;
     }
 
     try {
-      // 🌐 2. Call backend FIRST
       const response = await fetch(
         "http://127.0.0.1:8000/api/cart/add/",
         {
@@ -37,24 +35,27 @@ export default function ProductCard({ product }: Props) {
         }
       );
 
-      // ❌ handle backend failure
+      const data = await response.json();
+
       if (!response.ok) {
+        console.log("Backend error:", data);
         throw new Error("Failed to add to cart");
       }
 
-      const data = await response.json();
+      console.log("Cart added:", data);
 
-      // 🧠 3. Update Redux AFTER success
+      // ✅ IMPORTANT FIX: use product, NOT backend response
       dispatch(
         addToCart({
           id: product.id,
           name: product.name,
           image: product.image,
           price: product.price,
+          quantity: 1,
         })
       );
     } catch (error) {
-      console.error("Add to cart error:", error);
+      console.error(error);
       alert("Something went wrong while adding to cart");
     }
   };
@@ -68,9 +69,7 @@ export default function ProductCard({ product }: Props) {
       />
 
       <div className="p-4">
-        <h3 className="font-bold text-lg">
-          {product.name}
-        </h3>
+        <h3 className="font-bold text-lg">{product.name}</h3>
 
         <p className="text-xl font-semibold mt-1">
           ${product.price}
@@ -78,6 +77,7 @@ export default function ProductCard({ product }: Props) {
 
         <button
           onClick={handleAddToCart}
+          
           className="w-full mt-4 bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition"
         >
           Add To Cart

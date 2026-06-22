@@ -1,21 +1,41 @@
 "use client";
 
-import { useAppSelector, useAppDispatch } from "@/redux/hooks";
-import { removeFromCart, updateQuantity } from "@/redux/slices/cartSlice";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function CartPage() {
-  const dispatch = useAppDispatch();
+  const [cartItems, setCartItems] = useState([]);
 
-  // cart items from redux
- const cartItems = useAppSelector(
-  (state) => state.cart?.items || []
-);
-  // total price calculation
-  const totalPrice = cartItems.reduce((acc, item) => {
+  // 🔥 FETCH CART FROM DJANGO
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const token = localStorage.getItem("access");
+
+        const res = await fetch("http://127.0.0.1:8000/api/cart/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        console.log("CART API:", data);
+
+        setCartItems(data); // 🔥 IMPORTANT
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      }
+    };
+
+    fetchCart();
+  }, []);
+
+  // 💰 TOTAL PRICE
+  const totalPrice = cartItems.reduce((acc: any, item: any) => {
     return acc + item.price * item.quantity;
   }, 0);
 
+  // 🛒 EMPTY CART
   if (cartItems.length === 0) {
     return (
       <div className="flex items-center justify-center h-screen text-xl font-semibold">
@@ -28,86 +48,53 @@ export default function CartPage() {
     <div className="max-w-5xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Shopping Cart</h1>
 
-      {/* CART ITEMS LIST */}
+      {/* ITEMS */}
       <div className="space-y-4">
-        {cartItems.map((item) => (
+        {cartItems.map((item: any, index: number) => (
           <div
-            key={item.id}   // ✅ FIXED: unique key
+            key={item.id || index}
             className="flex items-center justify-between border p-4 rounded-xl shadow-sm"
           >
-            {/* PRODUCT IMAGE + NAME */}
+            {/* PRODUCT INFO */}
             <div className="flex items-center gap-4">
               <Image
-                src={item.image}
-                alt={item.name}
+                src={item.product_image || "/placeholder.png"}
+                alt={item.product}
                 width={80}
                 height={80}
                 className="rounded-lg object-cover"
               />
 
               <div>
-                <h2 className="font-semibold">{item.name}</h2>
+                <h2 className="font-semibold">{item.product}</h2>
                 <p className="text-gray-500">Rs {item.price}</p>
               </div>
             </div>
 
-            {/* QUANTITY CONTROLS */}
+            {/* QUANTITY (READ ONLY for now) */}
             <div className="flex items-center gap-3">
-              <button
-                onClick={() =>
-                  dispatch(
-                    updateQuantity({
-                      id: item.id,
-                      quantity: item.quantity - 1,
-                    })
-                  )
-                }
-                className="px-3 py-1 bg-gray-200 rounded"
-              >
-                -
-              </button>
-
-              <span>{item.quantity}</span>
-
-              <button
-                onClick={() =>
-                  dispatch(
-                    updateQuantity({
-                      id: item.id,
-                      quantity: item.quantity + 1,
-                    })
-                  )
-                }
-                className="px-3 py-1 bg-gray-200 rounded"
-              >
-                +
-              </button>
+              <span className="px-3 py-1 bg-gray-100 rounded">
+                Qty: {item.quantity}
+              </span>
             </div>
 
-            {/* TOTAL + REMOVE */}
+            {/* TOTAL */}
             <div className="text-right">
               <p className="font-semibold">
                 Rs {item.price * item.quantity}
               </p>
-
-              <button
-                onClick={() => dispatch(removeFromCart(item.id))}
-                className="text-red-500 text-sm mt-2"
-              >
-                Remove
-              </button>
             </div>
           </div>
         ))}
       </div>
 
-      {/* TOTAL SECTION */}
+      {/* TOTAL */}
       <div className="mt-8 border-t pt-4 flex justify-between items-center">
         <h2 className="text-xl font-bold">Total:</h2>
         <h2 className="text-xl font-bold">Rs {totalPrice}</h2>
       </div>
 
-      {/* CHECKOUT BUTTON */}
+      {/* CHECKOUT */}
       <button className="w-full mt-6 bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition">
         Proceed to Checkout
       </button>

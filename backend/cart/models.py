@@ -17,5 +17,6 @@ class CartItem(models.Model):
     product_name = models.CharField(max_length=255)
     price_at_add = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
+    
     class Meta:
-        unique_together = ("cart", "product")
+      unique_together = ("cart", "product")
