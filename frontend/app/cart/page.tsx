@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import CartQuantity from "@/components/cart/CartQuantity";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
@@ -32,6 +33,23 @@ export default function CartPage() {
     return acc + item.price * item.quantity;
   }, 0);
 
+  const handleIncrease = (id: number) => {
+    setCartItems((prev: any) =>
+      prev.map((item: any) =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item,
+      ),
+    );
+  };
+
+  const handleDecrease = (id: number) => {
+    setCartItems((prev: any) =>
+      prev
+        .map((item: any) =>
+          item.id === id ? { ...item, quantity: item.quantity - 1 } : item,
+        )
+        .filter((item: any) => item.quantity > 0),
+    );
+  };
   // EMPTY CART
   if (cartItems.length === 0) {
     return (
@@ -102,18 +120,11 @@ export default function CartPage() {
                   {/* RIGHT: MOBILE TOP-RIGHT + DESKTOP ALIGN */}
                   <div className="flex flex-col items-end gap-2">
                     {/* QTY → TOP RIGHT (ALWAYS) */}
-                        <span className="
-                            px-3 py-1.5 sm:px-4 sm:py-2
-                            text-xs sm:text-sm
-                            bg-black
-                            border border-gray-200
-                            rounded-full
-                            font-medium
-                            whitespace-nowrap
-                            self-end
-                          ">
-                      Qty: {item.quantity}
-                    </span>
+                    <CartQuantity
+                      quantity={item.quantity}
+                      onIncrease={() => handleIncrease(item.id)}
+                      onDecrease={() => handleDecrease(item.id)}
+                    />
 
                     {/* SUBTOTAL */}
                     <div className="text-right">
@@ -166,7 +177,7 @@ export default function CartPage() {
                 mt-6
                 bg-black
                 text-white
-                py-3 sm:py-4
+                py-3 sm:py-3
                 rounded-xl sm:rounded-2xl
                 font-semibold
                 text-sm sm:text-base
