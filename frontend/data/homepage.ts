@@ -17,7 +17,7 @@ export const categories = [
   {
     id: 4,
     title: "Accessories",
-    image: "/categories/accessories.jpg",
+    image: "/categories/airpod.jpg",
   },
 ];
 
