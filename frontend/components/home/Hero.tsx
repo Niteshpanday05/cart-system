@@ -11,6 +11,7 @@ export default function Hero() {
 
       {/* Overlay */}
      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/20" />
+     
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center">
