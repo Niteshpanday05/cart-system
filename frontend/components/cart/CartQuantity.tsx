@@ -14,33 +14,25 @@ export default function CartQuantity({
   onDecrease,
 }: Props) {
   return (
-    <div className="flex items-center gap-2 self-end">
-      
-      <button
-        onClick={onDecrease}
-        className="w-7 h-7 flex items-center justify-center bg-red-500 rounded-md text-lg font-bold"
-      >
-        −
-      </button>
+   <div className="inline-flex items-center rounded-sm bg-white p-1">
 
-      <span className="
-        px-3 py-1.5 sm:px-4 sm:py-2
-        text-xs sm:text-sm
-        bg-black text-white
-        rounded-full
-        font-medium
-        whitespace-nowrap
-      ">
-        Qty: {quantity}
-      </span>
+  <button
+    onClick={onDecrease}
+    className="w-7 h-7 rounded-lg text-black hover:bg-gray-100 transition flex items-center justify-center"
+  >
+    −
+  </button>
 
-      <button
-        onClick={onIncrease}
-        className="w-7 h-7 flex items-center justify-center bg-red-500 rounded-md text-lg font-bold"
-      >
-        +
-      </button>
+  <span className="w-6 h-7 flex items-center justify-center font-semibold text-black">
+    {quantity}
+  </span>
 
-    </div>
-  );
-}
+  <button
+    onClick={onIncrease}
+    className="w-7 h-7 rounded-lg text-black hover:bg-gray-100 transition flex items-center justify-center"
+  >
+    +
+  </button>
+
+</div>
+)}
